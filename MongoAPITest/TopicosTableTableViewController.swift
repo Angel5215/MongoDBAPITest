@@ -11,6 +11,7 @@ import UIKit
 class TopicosTableTableViewController: UITableViewController {
 
     let topicos = ["Estacionamiento", "Actividad", "Comida", "Facultad", "Representativo", "Ruta"]
+    let dimensiones = [0, 0, 0, 0, 2, 1]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +50,9 @@ class TopicosTableTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //Acción al tocar una celda
         if let mapaViewController = navigationController?.storyboard?.instantiateViewController(withIdentifier: "Mapa") as? ViewController {
-            present(mapaViewController, animated: true)
+            mapaViewController.topicoActual = topicos[indexPath.row].lowercased()
+            mapaViewController.dimension = dimensiones[indexPath.row]
+            navigationController?.pushViewController(mapaViewController, animated: true)
         }
     }
     
