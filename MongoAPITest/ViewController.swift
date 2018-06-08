@@ -12,8 +12,9 @@ import SwiftyJSON
 
 class ViewController: UIViewController {
 	
-	let BASE_URL = "http://192.168.0.6:8090/"
+	let BASE_URL = "http://192.168.1.76:8090/"
 	var mapView: GMSMapView!
+    var topicoActual : String?
 	
 	override func loadView() {
 		// Create a GMSCameraPosition that tells the map to display the
@@ -36,39 +37,7 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
 		let url = URL(string: BASE_URL)!
-		let request = URLRequest(url: url)
 		
-		let task = URLSession.shared.dataTask(with: request) {
-			(data, response, error) in
-			
-			guard let data = data, let response = response, let view = self.view as? GMSMapView, error == nil else {
-				return
-			}
-			
-			let geoJsonParser = GMUGeoJSONParser(data: data)
-			geoJsonParser.parse()
-			
-			print("------------")
-			print(geoJsonParser)
-			print(geoJsonParser.features.description)
-			geoJsonParser.features.first?.style = GMUStyle(styleID: "salon", stroke: UIColor.blue, fill: UIColor.black, width: 2.0, scale: 1.0, heading: 1.0, anchor: .zero, iconUrl: nil, title: "PROTECO 🐦👌", hasFill: true, hasStroke: true)
-			print("------------")
-			
-			DispatchQueue.main.async {
-				
-				/*for feature in geoJsonParser.features {
-					feature.style = GMUStyle(styleID: "salon", stroke: UIColor.blue, fill: UIColor.black, width: 2.0, scale: 1.0, heading: 1.0, anchor: .zero, iconUrl: nil, title: "PROTECO 🐦👌", hasFill: true, hasStroke: true)
-					print(feature.geometry)
-				}*/
-				
-				let renderer = GMUGeometryRenderer(map: view, geometries: geoJsonParser.features)
-				renderer.render()
-			}
-			/*let renderer = GMUGeometryRenderer(map: self.mapView, geometries: geoJsonParser.features)
-			
-			renderer.render()*/
-		}
-		task.resume()
 	}
 
 	override func didReceiveMemoryWarning() {

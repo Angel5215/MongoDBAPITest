@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		748D323B20CB163E003C403E /* TopicosTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D323A20CB163E003C403E /* TopicosTableTableViewController.swift */; };
+		748D323D20CB1CB4003C403E /* ConexionMongo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D323C20CB1CB4003C403E /* ConexionMongo.swift */; };
 		C82CB81487B15750EDD3F5FD /* Pods_MongoAPITest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F23E9BB22A18A9980162C9A /* Pods_MongoAPITest.framework */; };
 		FA02F67E20C90DBE009E0376 /* GMUGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = FA02F63A20C90DBD009E0376 /* GMUGradient.m */; };
 		FA02F67F20C90DBE009E0376 /* GMUHeatmapTileLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA02F63C20C90DBD009E0376 /* GMUHeatmapTileLayer.m */; };
@@ -43,6 +45,8 @@
 /* Begin PBXFileReference section */
 		2F23E9BB22A18A9980162C9A /* Pods_MongoAPITest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MongoAPITest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41EB55B299A81FEB39D09D39 /* Pods-MongoAPITest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MongoAPITest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MongoAPITest/Pods-MongoAPITest.debug.xcconfig"; sourceTree = "<group>"; };
+		748D323A20CB163E003C403E /* TopicosTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicosTableTableViewController.swift; sourceTree = "<group>"; };
+		748D323C20CB1CB4003C403E /* ConexionMongo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionMongo.swift; sourceTree = "<group>"; };
 		DFF5906B71D05C659370CD26 /* Pods-MongoAPITest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MongoAPITest.release.xcconfig"; path = "Pods/Target Support Files/Pods-MongoAPITest/Pods-MongoAPITest.release.xcconfig"; sourceTree = "<group>"; };
 		FA02F63920C90DBD009E0376 /* GMUGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMUGradient.h; sourceTree = "<group>"; };
 		FA02F63A20C90DBD009E0376 /* GMUGradient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMUGradient.m; sourceTree = "<group>"; };
@@ -300,6 +304,8 @@
 				FA02F69720C9186D009E0376 /* marker.png */,
 				FA52686220C8EDF7006B6B6E /* ViewController.swift */,
 				FA52686420C8EDF7006B6B6E /* Main.storyboard */,
+				748D323A20CB163E003C403E /* TopicosTableTableViewController.swift */,
+				748D323C20CB1CB4003C403E /* ConexionMongo.swift */,
 				FA52686720C8EDF8006B6B6E /* Assets.xcassets */,
 				FA52686920C8EDF8006B6B6E /* LaunchScreen.storyboard */,
 				FA52686C20C8EDF8006B6B6E /* Info.plist */,
@@ -462,7 +468,9 @@
 				FA02F69320C90DBE009E0376 /* GMUStaticCluster.m in Sources */,
 				FA02F68D20C90DBE009E0376 /* GQTPointQuadTreeChild.m in Sources */,
 				FA02F68420C90DBE009E0376 /* GMUFeature.m in Sources */,
+				748D323D20CB1CB4003C403E /* ConexionMongo.swift in Sources */,
 				FA02F68820C90DBE009E0376 /* GMUPlacemark.m in Sources */,
+				748D323B20CB163E003C403E /* TopicosTableTableViewController.swift in Sources */,
 				FA02F68620C90DBE009E0376 /* GMUGroundOverlay.m in Sources */,
 				FA02F68920C90DBE009E0376 /* GMUPoint.m in Sources */,
 				FA02F68520C90DBE009E0376 /* GMUGeometryCollection.m in Sources */,
