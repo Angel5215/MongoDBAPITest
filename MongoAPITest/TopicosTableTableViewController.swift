@@ -10,8 +10,8 @@ import UIKit
 
 class TopicosTableTableViewController: UITableViewController {
 
-    let topicos = ["Estacionamiento", "Actividad", "Comida", "Facultad", "Representativo", "Ruta"]
-    let dimensiones = [0, 0, 0, 0, 2, 1]
+    let topicos = ["Estacionamiento", "Actividad", "Comida", "Facultad", "Representativo", "Ruta", "Todos los topicos"]
+    let dimensiones = [0, 0, 0, 0, 2, 1, 3]
     
     override func viewDidLoad() {
         super.viewDidLoad()

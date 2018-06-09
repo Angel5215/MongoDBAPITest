@@ -33,26 +33,59 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
-        Conexion.obtenerJSON(URLBase: BASE_URL, topico: topicoActual){
-            jsonArray in
-            DispatchQueue.main.async {
-                switch self.dimension {
-                case 0:
-                    self.punto(datos: jsonArray)
-                    
-                case 1:
-                    self.polilinea(datos: jsonArray)
-                    
-                case 2:
-                    self.poligono(datos: jsonArray)
-                    
-                default:
-                    
-                    break
+        
+        if dimension != 3 {
+        
+            Conexion.obtenerJSON(URLBase: BASE_URL, topico: topicoActual){
+                jsonArray in
+                DispatchQueue.main.async {
+                    switch self.dimension {
+                    case 0:
+                        self.punto(datos: jsonArray)
+                        
+                    case 1:
+                        self.polilinea(datos: jsonArray)
+                        
+                    case 2:
+                        self.poligono(datos: jsonArray)
+                        
+                    default:
+                        
+                        break
+                    }
+                }
+            }
+        } else {
+            mostrarTodos()
+        }
+	}
+    
+    private func mostrarTodos() {
+        let topicos = [("estacionamiento",0), ("actividad",0), ("comida",0), ("facultad",0), ("representativo",2), ("ruta",1)]
+        
+        for topico in topicos {
+            Conexion.obtenerJSON(URLBase: BASE_URL, topico: topico.0){
+                jsonArray in
+                print(":v")
+                DispatchQueue.main.async {
+                    switch topico.1 {
+                    case 0:
+                        self.punto(datos: jsonArray)
+                        
+                    case 1:
+                        self.polilinea(datos: jsonArray)
+                        
+                    case 2:
+                        self.poligono(datos: jsonArray)
+                        
+                    default:
+                        print("default")
+                        break
+                    }
                 }
             }
         }
-	}
+    }
     
     private func punto(datos: [JSON]) {
         for element in datos {
@@ -77,6 +110,7 @@ class ViewController: UIViewController {
             let polyline = GMSPolyline(path: path)
             polyline.strokeWidth = 4
             polyline.strokeColor = getRandomColor()
+            polyline.geodesic = true
             polyline.map = self.mapView
         }
         
@@ -101,6 +135,7 @@ class ViewController: UIViewController {
             poligono.strokeWidth = 2
             poligono.strokeColor = getRandomColor()
             poligono.fillColor = getRandomColor(alpha: 0.28)
+            poligono.geodesic = true
             poligono.map = self.mapView
         }
     }
