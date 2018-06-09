@@ -11,12 +11,61 @@ import GoogleMaps
 import SwiftyJSON
 import GameplayKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, GMSMapViewDelegate {
 	
 	let BASE_URL = "http://192.168.1.76:8090/"
 	var mapView: GMSMapView!
     var topicoActual : String!
     var dimension : Int!
+    
+    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+        //print(coordinate)
+        
+        guard dimension == 0 else {
+            return
+        }
+        
+        let latitud = coordinate.latitude
+        let longitud = coordinate.longitude
+        var postString = "latitud=\(latitud)&longitud=\(longitud)"
+        
+        //Alerta para realizar buffer
+        let alerta = UIAlertController(title: "Encuentra que hay cerca de ti", message: "¿Cuantos metros estas dispuesto a caminar?", preferredStyle: .alert)
+        let calcular = UIAlertAction(title: "Dale", style: .default){
+            action in
+            guard let textField = alerta.textFields?.first, let dato = textField.text, let metros = Double(dato) else {
+                self.mapView.clear()
+                return
+            }
+            textField.keyboardType = .decimalPad
+            self.mapView.clear()
+            //Dibujar circulo
+            let circleCenter = coordinate
+            let circ = GMSCircle(position: circleCenter, radius: metros)
+            
+            circ.fillColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
+            circ.strokeColor = .red
+            circ.strokeWidth = 5
+            circ.map = mapView
+            
+            postString += "&metros=\(metros)"
+            
+            self.bufferTopico(postString: postString)
+        }
+        let cancelar = UIAlertAction(title: "Ño", style: .cancel){
+            _ in
+            return
+        }
+        
+        alerta.addTextField(configurationHandler: nil)
+        alerta.addAction(calcular)
+        alerta.addAction(cancelar)
+        
+        present(alerta, animated: true, completion: nil)
+        
+        
+    }
+    
    
 	
 	override func loadView() {
@@ -27,6 +76,8 @@ class ViewController: UIViewController {
 		mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
 		mapView.isMyLocationEnabled = true
 		view = mapView
+        
+        mapView.delegate = self
 		
 	}
 
@@ -34,10 +85,17 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
         
+        //Configuracion boton
+        navigationItem.title = topicoActual.uppercased()
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(ViewController.reload))
         
-        
+        cargarMapa()
+	}
+    
+    private func cargarMapa() {
         if dimension != 3 {
-        
+            
             Conexion.obtenerJSON(URLBase: BASE_URL, topico: topicoActual){
                 jsonArray in
                 DispatchQueue.main.async {
@@ -60,21 +118,15 @@ class ViewController: UIViewController {
         } else {
             mostrarTodos()
         }
-        
-        //Configuracion boton
-        navigationItem.title = topicoActual.uppercased()
-        navigationItem.largeTitleDisplayMode = .never
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Buffer", style: .plain, target: self, action: #selector(bufferTopico))
-	}
+    }
     
     @objc
-    private func bufferTopico() {
-        
+    private func reload() {
         mapView.clear()
-        
-        var latitud = 19.3278803
-        var longitud = -99.1842446
-        let postString = "latitud=\(latitud)&longitud=\(longitud)"
+        cargarMapa()
+    }
+    
+    private func bufferTopico(postString: String) {
         
         let url = URL(string: BASE_URL + "buffer/" + topicoActual)!
         var urlRequest = URLRequest(url: url)
@@ -83,7 +135,7 @@ class ViewController: UIViewController {
         
         let task = URLSession.shared.dataTask(with: urlRequest) {
             (data, response, error) in
-         
+            
             guard let data = data, let response = response, error == nil else {
                 return
             }
@@ -93,6 +145,7 @@ class ViewController: UIViewController {
                 return
             }
             
+            print(jsonArray)
             DispatchQueue.main.async {
                 self.punto(datos: jsonArray, nombreIcono: self.topicoActual)
             }
@@ -100,6 +153,7 @@ class ViewController: UIViewController {
             
         }
         task.resume()
+       
     }
     
     private func mostrarTodos() {
