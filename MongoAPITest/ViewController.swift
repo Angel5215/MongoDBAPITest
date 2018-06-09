@@ -34,6 +34,8 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
         
+        
+        
         if dimension != 3 {
         
             Conexion.obtenerJSON(URLBase: BASE_URL, topico: topicoActual){
@@ -41,7 +43,7 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async {
                     switch self.dimension {
                     case 0:
-                        self.punto(datos: jsonArray)
+                        self.punto(datos: jsonArray, nombreIcono: self.topicoActual)
                         
                     case 1:
                         self.polilinea(datos: jsonArray)
@@ -58,7 +60,47 @@ class ViewController: UIViewController {
         } else {
             mostrarTodos()
         }
+        
+        //Configuracion boton
+        navigationItem.title = topicoActual.uppercased()
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Buffer", style: .plain, target: self, action: #selector(bufferTopico))
 	}
+    
+    @objc
+    private func bufferTopico() {
+        
+        mapView.clear()
+        
+        var latitud = 19.3278803
+        var longitud = -99.1842446
+        let postString = "latitud=\(latitud)&longitud=\(longitud)"
+        
+        let url = URL(string: BASE_URL + "buffer/" + topicoActual)!
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = postString.data(using: .utf8)
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) {
+            (data, response, error) in
+         
+            guard let data = data, let response = response, error == nil else {
+                return
+            }
+            
+            guard let json = try? JSON(data: data), let jsonArray = json.array else {
+                print("no funciono")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.punto(datos: jsonArray, nombreIcono: self.topicoActual)
+            }
+            
+            
+        }
+        task.resume()
+    }
     
     private func mostrarTodos() {
         let topicos = [("estacionamiento",0), ("actividad",0), ("comida",0), ("facultad",0), ("representativo",2), ("ruta",1)]
@@ -70,7 +112,7 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async {
                     switch topico.1 {
                     case 0:
-                        self.punto(datos: jsonArray)
+                        self.punto(datos: jsonArray, nombreIcono: topico.0)
                         
                     case 1:
                         self.polilinea(datos: jsonArray)
@@ -87,7 +129,7 @@ class ViewController: UIViewController {
         }
     }
     
-    private func punto(datos: [JSON]) {
+    private func punto(datos: [JSON], nombreIcono: String) {
         for element in datos {
             //print(element["geometry"]["coordinates"][0].double)
             let latitud = element["geometry"]["coordinates"][1].double!
@@ -96,6 +138,7 @@ class ViewController: UIViewController {
             marker.position = CLLocationCoordinate2D(latitude: latitud, longitude: longitud)
             marker.title = element["properties"]["Name"].string!
             marker.snippet = element["properties"]["description"].string ?? "Sin descripcion"
+            marker.icon = UIImage(named: nombreIcono)
             marker.map = self.mapView
         }
     }
