@@ -66,7 +66,77 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
     }
     
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        
+        guard dimension == 0 else { return }
+        
+        let latitud = coordinate.latitude
+        let longitud = coordinate.longitude
+        var postString = "latitud=\(latitud)&longitud=\(longitud)"
+        
+        let alerta = UIAlertController(title: "Agregar un punto en \(topicoActual!)", message: "Rellena los datos", preferredStyle: .alert)
+        let añadir = UIAlertAction(title: "Añadir", style: .default){
+            _ in
+            
+            guard let textFields = alerta.textFields, textFields.count == 2, let titulo = textFields[0].text, let descripcion = textFields[1].text, titulo.count > 0, descripcion.count > 0 else {
+                return
+            }
+            
+            //Enviar datos a Kitten
+            postString += "&titulo=\(titulo)&descripcion=\(descripcion)"
+            self.agregarPunto(postString: postString)
+            
+        }
+        
+        let cancelar = UIAlertAction(title: "Cancelar", style: .cancel){
+            _ in
+            return
+        }
+        
+        alerta.addTextField {
+            textField in
+            textField.placeholder = "Titulo"
+        }
+        alerta.addTextField {
+            textField in
+            textField.placeholder = "Descripcion"
+        }
+        alerta.addAction(añadir)
+        alerta.addAction(cancelar)
+        
+        present(alerta, animated: true, completion: nil)
+        
+    }
    
+    private func agregarPunto(postString: String){
+        
+        let url = URL(string: BASE_URL + "insert/" + topicoActual)!
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = postString.data(using: .utf8)
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) {
+            (data, response, error) in
+            
+            guard let data = data, let response = response, error == nil else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                let alerta = UIAlertController(title: "Ok!", message: "Tu insercion se realizó", preferredStyle: .alert)
+                
+                let aceptar = UIAlertAction(title: "Aceptar", style: .default)
+            
+                alerta.addAction(aceptar)
+                self.present(alerta, animated: true)
+                self.reload()
+            }
+            
+            
+        }
+        task.resume()
+        
+    }
 	
 	override func loadView() {
 		// Create a GMSCameraPosition that tells the map to display the
