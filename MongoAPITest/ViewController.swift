@@ -276,9 +276,20 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             }
             let polyline = GMSPolyline(path: path)
             polyline.strokeWidth = 4
-            polyline.strokeColor = getRandomColor()
+            let color = getRandomColor()
+            polyline.strokeColor = color
             polyline.geodesic = true
             polyline.map = self.mapView
+            
+            let elementoActual = element["geometry"]["coordinates"].array!
+            let puntoCentral = elementoActual[elementoActual.count/2]
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: puntoCentral[1].double!, longitude: puntoCentral[0].double!)
+            marker.title = element["properties"]["Name"].string
+            marker.snippet = element["properties"]["description"].string ?? "Sin descripcion"
+            marker.snippet = marker.snippet! + "\nDistancia: \(element["properties"]["distance"].int32!) m"
+            marker.icon = GMSMarker.markerImage(with: color)
+            marker.map = self.mapView
         }
         
     }
@@ -300,12 +311,23 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             }
             let poligono = GMSPolygon(path: contorno)
             poligono.strokeWidth = 2
-            poligono.strokeColor = getRandomColor()
+            let color = getRandomColor()
+            poligono.strokeColor = color
             poligono.fillColor = getRandomColor(alpha: 0.28)
             poligono.geodesic = true
             poligono.map = self.mapView
+            
+            let marker = GMSMarker()
+            let puntoInicial = element["geometry"]["coordinates"][0][0].array!
+            marker.position = CLLocationCoordinate2D(latitude: puntoInicial[1].double!, longitude: puntoInicial[0].double!)
+            marker.title = element["properties"]["Name"].string
+            marker.snippet = element["properties"]["description"].string ?? "Sin descripcion"
+            marker.icon = GMSMarker.markerImage(with: color)
+            marker.map = self.mapView
         }
+        
     }
+    
 
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
